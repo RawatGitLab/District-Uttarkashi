@@ -26,7 +26,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
 
   // Map & Interaction state
-  const [activeBaseMap, setActiveBaseMap] = useState<string>("osm");
+  const [activeBaseMap, setActiveBaseMap] = useState<string>("satellite");
   const [selectedFeature, setSelectedFeature] = useState<GisFeature | null>(null);
   const [hoveredFeature, setHoveredFeature] = useState<GisFeature | null>(null);
   const [isTableCollapsed, setIsTableCollapsed] = useState<boolean>(true);
@@ -197,51 +197,54 @@ export default function App() {
 
     layerNames.sort((a, b) => sortPriority(a, layerTypes[a]) - sortPriority(b, layerTypes[b]));
 
+    const PALETTE_COLORS = [
+      "#6366f1", // Indigo
+      "#ec4899", // Pink
+      "#0ea5e9", // Sky Blue
+      "#10b981", // Emerald Green
+      "#f59e0b", // Amber
+      "#8b5cf6", // Purple
+      "#ef4444", // Red
+      "#14b8a6", // Teal
+      "#f43f5e", // Rose
+      "#06b6d4"  // Cyan
+    ];
+
     const configuration: LayerConfig[] = layerNames.map((name, index) => {
       const type = layerTypes[name] || "unknown";
       
-      // Determine elegant theme coloring based on standard GIS mapping schemas
-      let color = "#6366f1"; // default indigo
-      let fillColor = "#818cf8";
+      let color = PALETTE_COLORS[index % PALETTE_COLORS.length];
+      let fillColor = color;
       let weight = 2;
-      let opacity = 0.85;
+      let opacity = 0.9;
       let fillOpacity = 0.4;
 
       const lowerName = name.toLowerCase();
-      if (lowerName.includes("village")) {
+
+      if (type === "polygon") {
+        // "Make All Polygon layer hollow no fill, only add boundary colour with white."
+        color = "#ffffff";
+        fillColor = "#ffffff";
+        fillOpacity = 0; // Hollow (no fill)
+        weight = 2;
+        opacity = 0.95;
+      } else if (type === "linestring") {
+        // "Take care of layers that are in line geometry." -> no fill, distinct stroke color
+        if (lowerName.includes("river") || lowerName.includes("canal") || lowerName.includes("water")) {
+          color = "#0ea5e9"; // stream sky blue
+        } else {
+          color = PALETTE_COLORS[index % PALETTE_COLORS.length];
+        }
+        fillColor = color;
+        fillOpacity = 0; // No fill
+        weight = 2.5;
+        opacity = 1.0;
+      } else if (lowerName.includes("village")) {
         color = "#ec4899"; // bright pink villages selector
         fillColor = "#f472b6";
         weight = 1.5;
         opacity = 0.95;
-      } else if (lowerName.includes("river") || lowerName.includes("canal") || lowerName.includes("water")) {
-        color = "#0ea5e9"; // stream sky blue
-        fillColor = "#38bdf8";
-        weight = 2.5;
-        opacity = 1.0;
-        fillOpacity = 0.1;
-      } else if (lowerName.includes("district") || lowerName.includes("boundary")) {
-        color = "#a16207"; // Golden brown outline
-        fillColor = "#fbbf24"; // Mustard polygon fill
-        weight = 2.5;
-        opacity = 0.9;
-        fillOpacity = 0.55; // Solid background core
-      } else if (lowerName.includes("block")) {
-        color = "#c2410c"; // Rust dark
-        fillColor = "#fdba74"; // Peach block
-        weight = 2.0;
-        opacity = 0.8;
-        fillOpacity = 0.25;
-      } else if (lowerName.includes("tehsil") || lowerName.includes("tahsil")) {
-        color = "#15803d"; // Deep forest green
-        fillColor = "#86efac"; // Mint tehsil
-        weight = 2.0;
-        opacity = 0.85;
-        fillOpacity = 0.3;
-      } else {
-        // Dynamic palette for any other shapefile imported
-        const hue = (index * 137.5) % 360; 
-        color = `hsl(${hue}, 70%, 45%)`;
-        fillColor = `hsl(${hue}, 70%, 65%)`;
+        fillOpacity = 0.4;
       }
 
       return {
@@ -380,20 +383,39 @@ export default function App() {
           </div>
         ) : error ? (
           <div className="absolute inset-x-0 inset-y-0 bg-slate-950 flex flex-col items-center justify-center z-[100] p-6 text-center select-none font-sans">
-            <div className="bg-slate-900 border border-red-500/20 max-w-md p-8 rounded-2xl shadow-2xl flex flex-col items-center">
+            <div className="bg-slate-900 border border-red-500/20 max-w-lg p-8 rounded-2xl shadow-2xl flex flex-col items-center">
               <div className="w-12 h-12 bg-red-500/10 rounded-full flex items-center justify-center mb-4 text-red-500">
                 <ServerCrash className="w-6 h-6" />
               </div>
-              <h3 className="text-base font-bold text-slate-100">Database Connection Failed</h3>
+              <h3 className="text-base font-bold text-slate-100">Database Configuration Required</h3>
               <p className="text-xs text-red-400/90 font-mono bg-red-950/20 border border-red-900/35 p-3 rounded-md mt-3 mb-4 text-left leading-relaxed break-words w-full">
                 {error}
               </p>
+              
+              {error.toLowerCase().includes("environment variable") && (
+                <div className="text-left bg-slate-800/80 border border-slate-700 p-4 rounded-xl mb-4 w-full text-xs text-slate-300 space-y-2">
+                  <p className="font-semibold text-slate-200">How to configure in Google AI Studio Build:</p>
+                  <ol className="list-decimal list-inside space-y-1 text-slate-400">
+                    <li>Click on the <strong className="text-white">Settings</strong> menu in the upper-right corner of AI Studio.</li>
+                    <li>Add your environment variables under the <strong className="text-white">Environment Variables / Secrets</strong> section.</li>
+                    <li>Configure the following keys:
+                      <ul className="list-disc list-inside ml-4 mt-1 font-mono text-[11px] text-indigo-300">
+                        <li>MONGODB_URI</li>
+                        <li>MONGODB_DB</li>
+                        <li>MONGODB_COLLECTION</li>
+                      </ul>
+                    </li>
+                    <li>Save the changes, and click "Retry Connection" below!</li>
+                  </ol>
+                </div>
+              )}
+
               <p className="text-xs text-slate-400 leading-normal max-w-sm">
                 Ensure that your Atlas Cluster allows connection requests, and that your collection contains valid GeoJSON shapefiles.
               </p>
               <button
-                onClick={fetchFeatures}
-                className="mt-6 font-semibold text-xs bg-indigo-600 font-sans hover:bg-indigo-500 text-white px-5 py-2 rounded-lg shadow-md hover:shadow-indigo-500/10 transition-all duration-150"
+                onClick={() => fetchFeatures()}
+                className="mt-6 font-semibold text-xs bg-indigo-600 font-sans hover:bg-indigo-500 text-white px-5 py-2 rounded-lg shadow-md hover:shadow-indigo-500/10 transition-all duration-150 cursor-pointer"
               >
                 Retry Connection
               </button>

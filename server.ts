@@ -69,9 +69,22 @@ const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB;
 const MONGODB_COLLECTION = process.env.MONGODB_COLLECTION;
 
+if (!MONGODB_URI) {
+  console.error("CRITICAL ERROR: MONGODB_URI environment variable is not defined!");
+}
+if (!MONGODB_DB) {
+  console.error("CRITICAL ERROR: MONGODB_DB environment variable is not defined!");
+}
+if (!MONGODB_COLLECTION) {
+  console.error("CRITICAL ERROR: MONGODB_COLLECTION environment variable is not defined!");
+}
+
 let mongoClient: MongoClient | null = null;
 
 async function getMongoClient() {
+  if (!MONGODB_URI) {
+    throw new Error("MONGODB_URI environment variable is missing or undefined.");
+  }
   if (!mongoClient) {
     try {
       mongoClient = new MongoClient(MONGODB_URI);
@@ -85,6 +98,19 @@ async function getMongoClient() {
   return mongoClient;
 }
 
+function getDatabaseAndCollection(client: MongoClient) {
+  if (!MONGODB_DB) {
+    throw new Error("MONGODB_DB environment variable is missing or undefined.");
+  }
+  if (!MONGODB_COLLECTION) {
+    throw new Error("MONGODB_COLLECTION environment variable is missing or undefined.");
+  }
+  return {
+    db: client.db(MONGODB_DB),
+    collection: client.db(MONGODB_DB).collection(MONGODB_COLLECTION)
+  };
+}
+
 // Enable JSON parser
 app.use(express.json());
 
@@ -92,8 +118,7 @@ app.use(express.json());
 app.get("/api/debug", async (req, res) => {
   try {
     const client = await getMongoClient();
-    const db = client.db(MONGODB_DB);
-    const collection = db.collection(MONGODB_COLLECTION);
+    const { db, collection } = getDatabaseAndCollection(client);
     
     // Get total document count
     const totalCount = await collection.countDocuments();
@@ -137,8 +162,7 @@ async function fetchAndProcessFeatures(force = false) {
   
   try {
     const client = await getMongoClient();
-    const db = client.db(MONGODB_DB);
-    const collection = db.collection(MONGODB_COLLECTION);
+    const { db, collection } = getDatabaseAndCollection(client);
     
     // Quick, lightweight check to count the documents (layers) in the collection
     const currentDocCount = await collection.countDocuments().catch(() => 0);
@@ -162,8 +186,7 @@ async function fetchAndProcessFeatures(force = false) {
   fetchPromise = (async () => {
     try {
       const client = await getMongoClient();
-      const db = client.db(MONGODB_DB);
-      const collection = db.collection(MONGODB_COLLECTION);
+      const { db, collection } = getDatabaseAndCollection(client);
       
       console.log("Fetching GIS features from MongoDB Atlas via cursor to save memory...");
       const cursor = collection.find({});
