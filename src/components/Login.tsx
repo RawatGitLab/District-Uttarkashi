@@ -68,11 +68,11 @@ export default function Login({ onLoginSuccess }: LoginProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/10 animate-fade-in font-sans pointer-events-auto">
-      <div className="w-full max-w-[420px] bg-white/80 dark:bg-slate-900/85 border border-white/60 dark:border-slate-700/60 rounded-3xl p-8 sm:p-9 shadow-2xl flex flex-col items-center transition-all duration-300">
+    <div className="fixed inset-0 z-[9000] flex items-center justify-center p-4 bg-slate-900/40 dark:bg-slate-950/70 animate-fade-in font-sans pointer-events-auto transition-colors duration-300">
+      <div className="w-full max-w-[420px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 sm:p-9 shadow-2xl flex flex-col items-center transition-all duration-300 relative">
         
         {/* Top Circular Badge */}
-        <div className="w-16 h-16 rounded-full bg-indigo-100/80 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/60 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-4 shadow-sm">
+        <div className="w-16 h-16 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/60 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mt-2 mb-4 shadow-sm">
           <Compass className="w-8 h-8 stroke-[1.75] animate-pulse-slow" />
         </div>
 
@@ -90,14 +90,14 @@ export default function Login({ onLoginSuccess }: LoginProps) {
           <label className="text-[11px] font-bold tracking-wider text-slate-500 dark:text-slate-400 uppercase mb-1.5 self-start">
             USERNAME
           </label>
-          <div className="w-full relative flex items-center bg-slate-200/50 dark:bg-slate-800/60 focus-within:bg-white dark:focus-within:bg-slate-800 border border-slate-300/60 dark:border-slate-700 focus-within:border-indigo-500 dark:focus-within:border-indigo-500 rounded-xl px-3.5 py-3 transition-all shadow-inner">
-            <User className="w-4 h-4 text-slate-400 mr-2.5 shrink-0" />
+          <div className="w-full relative flex items-center bg-slate-100/90 dark:bg-slate-800/70 focus-within:bg-white dark:focus-within:bg-slate-800 border border-slate-200 dark:border-slate-700 focus-within:border-indigo-500 dark:focus-within:border-indigo-500 rounded-xl px-3.5 py-3 transition-all shadow-inner">
+            <User className="w-4 h-4 text-slate-400 dark:text-slate-500 mr-2.5 shrink-0" />
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Enter username"
-              className="bg-transparent text-sm text-slate-800 dark:text-slate-100 font-medium placeholder:text-slate-400 outline-none w-full"
+              className="bg-transparent text-sm text-slate-800 dark:text-slate-100 font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none w-full"
               autoComplete="username"
               required
             />
@@ -107,14 +107,14 @@ export default function Login({ onLoginSuccess }: LoginProps) {
           <label className="text-[11px] font-bold tracking-wider text-slate-500 dark:text-slate-400 uppercase mb-1.5 mt-4 self-start">
             PASSWORD
           </label>
-          <div className="w-full relative flex items-center bg-slate-200/50 dark:bg-slate-800/60 focus-within:bg-white dark:focus-within:bg-slate-800 border border-slate-300/60 dark:border-slate-700 focus-within:border-indigo-500 dark:focus-within:border-indigo-500 rounded-xl px-3.5 py-3 transition-all shadow-inner">
-            <Lock className="w-4 h-4 text-slate-400 mr-2.5 shrink-0" />
+          <div className="w-full relative flex items-center bg-slate-100/90 dark:bg-slate-800/70 focus-within:bg-white dark:focus-within:bg-slate-800 border border-slate-200 dark:border-slate-700 focus-within:border-indigo-500 dark:focus-within:border-indigo-500 rounded-xl px-3.5 py-3 transition-all shadow-inner">
+            <Lock className="w-4 h-4 text-slate-400 dark:text-slate-500 mr-2.5 shrink-0" />
             <input
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter password"
-              className="bg-transparent text-sm text-slate-800 dark:text-slate-100 font-medium placeholder:text-slate-400 outline-none w-full pr-8"
+              className="bg-transparent text-sm text-slate-800 dark:text-slate-100 font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none w-full pr-8"
               autoComplete="current-password"
               required
             />
@@ -139,7 +139,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-indigo-600/30 active:scale-[0.98] transition-all text-sm tracking-wide flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
+            className="w-full mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-indigo-600/25 active:scale-[0.98] transition-all text-sm tracking-wide flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
           >
             {loading ? (
               <>
@@ -153,11 +153,11 @@ export default function Login({ onLoginSuccess }: LoginProps) {
         </form>
 
         {/* Divider */}
-        <div className="w-full h-[1px] bg-slate-300/60 dark:bg-slate-700/60 my-6" />
+        <div className="w-full h-[1px] bg-slate-200 dark:bg-slate-800 my-6" />
 
         {/* Footer Text */}
         <div className="text-[10px] font-bold tracking-[0.2em] text-slate-400 dark:text-slate-500 uppercase text-center flex items-center justify-center gap-1.5">
-          <ShieldCheck className="w-3 h-3 text-slate-400" />
+          <ShieldCheck className="w-3 h-3 text-slate-400 dark:text-slate-500" />
           <span>UTTARKASHI • GEOPORTAL</span>
         </div>
 

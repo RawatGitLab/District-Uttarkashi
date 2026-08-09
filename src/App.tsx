@@ -4,6 +4,7 @@ import Sidebar from "./components/Sidebar";
 import MapComponent from "./components/MapComponent";
 import AttributeTable from "./components/AttributeTable";
 import Login from "./components/Login";
+import ThemeToggle from "./components/ThemeToggle";
 import { 
   Database, 
   Layers, 
@@ -327,26 +328,28 @@ export default function App() {
   };
 
   return (
-    <div className="flex flex-col h-screen w-screen bg-slate-100 overflow-hidden font-sans">
+    <div className="flex flex-col h-screen w-screen bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 overflow-hidden font-sans transition-colors duration-200">
       {/* Visual Navigation Header */}
-      <header className="h-14 bg-slate-900 text-slate-100 px-4 flex items-center justify-between border-b border-slate-950 shrink-0 select-none shadow-md">
+      <header className="relative z-[10000] h-14 bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100 px-4 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 shrink-0 select-none shadow-sm transition-colors duration-200">
         <div className="flex items-center space-x-3">
           <div className="bg-indigo-600 p-1.5 rounded-lg text-white shadow-sm flex items-center justify-center">
             <Compass className="w-5 h-5 text-indigo-100" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-sm font-extrabold tracking-tight text-white uppercase">Geography For District Planners/Administrators</span>
-              <span className="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-1.5 py-0.5 rounded border border-emerald-500/30 animate-pulse">
+              <span className="text-sm font-extrabold tracking-tight text-slate-900 dark:text-white uppercase">Geography For District Planners/Administrators</span>
+              <span className="text-[10px] bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-bold px-1.5 py-0.5 rounded border border-emerald-500/30 animate-pulse">
                 Live Server
               </span>
             </div>
-            <h2 className="text-base font-bold tracking-tight text-slate-200">District Uttarkashi</h2>
+            <h2 className="text-xs font-bold tracking-tight text-slate-600 dark:text-slate-300">District Uttarkashi</h2>
           </div>
         </div>
 
         {/* Global summary specs */}
-        <div className="flex items-center space-x-3 text-xs font-semibold text-slate-300">
+        <div className="flex items-center space-x-3 text-xs font-semibold text-slate-700 dark:text-slate-300">
+          <ThemeToggle variant="badge" showLabel={true} />
+
           <button
             onClick={() => fetchFeatures(true)}
             disabled={loading}
@@ -356,13 +359,13 @@ export default function App() {
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
             <span>Sync Database</span>
           </button>
-          <div className="hidden md:flex items-center gap-1.5 bg-slate-800 px-2.5 py-1.5 rounded-md">
-            <Layers className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Layers: <strong className="text-white font-mono">{layers.length}</strong></span>
+          <div className="hidden md:flex items-center gap-1.5 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-2.5 py-1.5 rounded-md">
+            <Layers className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+            <span>Layers: <strong className="text-slate-900 dark:text-white font-mono">{layers.length}</strong></span>
           </div>
-          <div className="hidden md:flex items-center gap-1.5 bg-slate-800 px-2.5 py-1.5 rounded-md">
-            <Database className="w-3.5 h-3.5 text-pink-400" />
-            <span>Entities: <strong className="text-white font-mono">{features.length}</strong></span>
+          <div className="hidden md:flex items-center gap-1.5 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-2.5 py-1.5 rounded-md">
+            <Database className="w-3.5 h-3.5 text-pink-600 dark:text-pink-400" />
+            <span>Entities: <strong className="text-slate-900 dark:text-white font-mono">{features.length}</strong></span>
           </div>
 
           {isAuthenticated && (
@@ -371,10 +374,10 @@ export default function App() {
                 localStorage.removeItem("uttarkashi_geo_auth");
                 setIsAuthenticated(false);
               }}
-              className="flex items-center gap-1.5 bg-red-950/40 hover:bg-red-900/60 text-red-300 hover:text-red-100 border border-red-800/40 px-2.5 py-1.5 rounded-md text-xs font-semibold transition cursor-pointer ml-1"
+              className="flex items-center gap-1.5 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/60 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800/40 px-2.5 py-1.5 rounded-md text-xs font-semibold transition cursor-pointer ml-1"
               title="Sign Out of Uttarkashi Geoportal"
             >
-              <LogOut className="w-3.5 h-3.5 text-red-400" />
+              <LogOut className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />
               <span className="hidden sm:inline">Sign Out</span>
             </button>
           )}
