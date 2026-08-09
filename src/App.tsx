@@ -342,7 +342,7 @@ export default function App() {
                 Live Server
               </span>
             </div>
-            <h2 className="text-xs font-bold tracking-tight text-slate-600 dark:text-slate-300">District Uttarkashi</h2>
+            <h2 className="text-xs font-bold tracking-tight text-slate-600 dark:text-slate-300">District Uttarkashi [Code: 056]</h2>
           </div>
         </div>
 
