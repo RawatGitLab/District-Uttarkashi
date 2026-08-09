@@ -26,7 +26,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
 
   // Map & Interaction state
-  const [activeBaseMap, setActiveBaseMap] = useState<string>("satellite");
+  const [activeBaseMap, setActiveBaseMap] = useState<string>("osm");
   const [selectedFeature, setSelectedFeature] = useState<GisFeature | null>(null);
   const [hoveredFeature, setHoveredFeature] = useState<GisFeature | null>(null);
   const [isTableCollapsed, setIsTableCollapsed] = useState<boolean>(true);
@@ -222,9 +222,9 @@ export default function App() {
       const lowerName = name.toLowerCase();
 
       if (type === "polygon") {
-        // "Make All Polygon layer hollow no fill, only add boundary colour with white."
-        color = "#ffffff";
-        fillColor = "#ffffff";
+        // All Polygon layers hollow with no fill, boundary colour set to Black
+        color = "#000000";
+        fillColor = "#000000";
         fillOpacity = 0; // Hollow (no fill)
         weight = 2;
         opacity = 0.95;
