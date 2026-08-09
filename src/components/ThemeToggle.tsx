@@ -17,12 +17,12 @@ export default function ThemeToggle({
   onThemeChange,
 }: ThemeToggleProps) {
   const [theme, setTheme] = useState<Theme>(() => {
-    // 1. Check saved localStorage
-    const saved = localStorage.getItem("uttarkashi_geo_theme");
+    // 1. Check saved localStorage (using v2 key to ensure light theme default for all initial loads)
+    const saved = localStorage.getItem("uttarkashi_geo_theme_v2");
     if (saved === "dark" || saved === "light") {
       return saved;
     }
-    // 2. Default to light theme on first load
+    // 2. Default strictly to light theme on first load
     return "light";
   });
 
@@ -34,7 +34,7 @@ export default function ThemeToggle({
       root.classList.remove("dark");
     }
 
-    localStorage.setItem("uttarkashi_geo_theme", theme);
+    localStorage.setItem("uttarkashi_geo_theme_v2", theme);
 
     if (onThemeChange) {
       onThemeChange(theme);
@@ -67,7 +67,7 @@ export default function ThemeToggle({
       root.classList.remove("dark");
     }
 
-    localStorage.setItem("uttarkashi_geo_theme", nextTheme);
+    localStorage.setItem("uttarkashi_geo_theme_v2", nextTheme);
     window.dispatchEvent(new CustomEvent("themeChange", { detail: nextTheme }));
   };
 
