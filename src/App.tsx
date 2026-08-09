@@ -3,6 +3,7 @@ import { GisFeature, LayerConfig, BaseMap } from "./types";
 import Sidebar from "./components/Sidebar";
 import MapComponent from "./components/MapComponent";
 import AttributeTable from "./components/AttributeTable";
+import Login from "./components/Login";
 import { 
   Database, 
   Layers, 
@@ -16,10 +17,15 @@ import {
   Sparkles, 
   Info,
   ServerCrash,
-  RefreshCw
+  RefreshCw,
+  LogOut
 } from "lucide-react";
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return localStorage.getItem("uttarkashi_geo_auth") === "true";
+  });
+
   const [features, setFeatures] = useState<GisFeature[]>([]);
   const [layers, setLayers] = useState<LayerConfig[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -358,6 +364,20 @@ export default function App() {
             <Database className="w-3.5 h-3.5 text-pink-400" />
             <span>Entities: <strong className="text-white font-mono">{features.length}</strong></span>
           </div>
+
+          {isAuthenticated && (
+            <button
+              onClick={() => {
+                localStorage.removeItem("uttarkashi_geo_auth");
+                setIsAuthenticated(false);
+              }}
+              className="flex items-center gap-1.5 bg-red-950/40 hover:bg-red-900/60 text-red-300 hover:text-red-100 border border-red-800/40 px-2.5 py-1.5 rounded-md text-xs font-semibold transition cursor-pointer ml-1"
+              title="Sign Out of Uttarkashi Geoportal"
+            >
+              <LogOut className="w-3.5 h-3.5 text-red-400" />
+              <span className="hidden sm:inline">Sign Out</span>
+            </button>
+          )}
         </div>
       </header>
 
@@ -478,6 +498,16 @@ export default function App() {
           </>
         )}
       </main>
+
+      {/* Transparent Login Modal Overlay */}
+      {!isAuthenticated && (
+        <Login
+          onLoginSuccess={() => {
+            localStorage.setItem("uttarkashi_geo_auth", "true");
+            setIsAuthenticated(true);
+          }}
+        />
+      )}
     </div>
   );
 }

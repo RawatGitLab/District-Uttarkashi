@@ -114,6 +114,20 @@ function getDatabaseAndCollection(client: MongoClient) {
 // Enable JSON parser
 app.use(express.json());
 
+
+// API: Login verification endpoint
+app.post("/api/login", (req, res) => {
+  const { username, password } = req.body || {};
+  const authUsername = process.env.VITE_AUTH_USERNAME;
+  const authPassword = process.env.VITE_AUTH_PASSWORD;
+
+  if (authUsername && authPassword && username === authUsername && password === authPassword) {
+    res.json({ success: true, token: "authenticated" });
+  } else {
+    res.status(401).json({ success: false, message: "Invalid username or password" });
+  }
+});
+
 // API: Debug MongoDB schema
 app.get("/api/debug", async (req, res) => {
   try {
