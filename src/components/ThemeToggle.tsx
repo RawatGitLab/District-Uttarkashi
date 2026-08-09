@@ -22,10 +22,7 @@ export default function ThemeToggle({
     if (saved === "dark" || saved === "light") {
       return saved;
     }
-    // 2. Check system preference
-    if (typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      return "dark";
-    }
+    // 2. Default to light theme on first load
     return "light";
   });
 
